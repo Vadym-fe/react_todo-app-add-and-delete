@@ -130,7 +130,7 @@ export const App: React.FC = () => {
       .then(data => {
         setTodos(
           todos.map(todo => {
-            if (data.id === id) {
+            if (todo.id === id) {
               return data;
             }
 
