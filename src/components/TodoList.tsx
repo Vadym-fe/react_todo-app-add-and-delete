@@ -4,14 +4,14 @@ import { TodoItem } from './TodoItem';
 
 type Props = {
   todos: Todo[];
-  checkedTodoComleted: (id: number, completed: boolean) => void;
+  checkedTodoCompleted: (id: number, completed: boolean) => void;
   removeTodo: (id: number) => void;
   deletingTodoId: number | null;
 };
 
 export const TodoList: React.FC<Props> = ({
   todos,
-  checkedTodoComleted,
+  checkedTodoCompleted,
   removeTodo,
   deletingTodoId,
 }) => {
@@ -21,7 +21,7 @@ export const TodoList: React.FC<Props> = ({
         <TodoItem
           key={todo.id}
           todo={todo}
-          checkedTodoComleted={checkedTodoComleted}
+          checkedTodoCompleted={checkedTodoCompleted}
           removeTodo={removeTodo}
           deletingTodoId={deletingTodoId}
         />

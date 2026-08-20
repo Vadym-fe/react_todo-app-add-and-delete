@@ -4,14 +4,14 @@ import { Todo } from '../types/Todo';
 
 type Props = {
   todo: Todo;
-  checkedTodoComleted: (id: number, completed: boolean) => void;
+  checkedTodoCompleted: (id: number, completed: boolean) => void;
   removeTodo: (id: number) => void;
   deletingTodoId: number | null;
 };
 
 export const TodoItem: React.FC<Props> = ({
   todo,
-  checkedTodoComleted,
+  checkedTodoCompleted,
   removeTodo,
   deletingTodoId,
 }) => {
@@ -24,7 +24,7 @@ export const TodoItem: React.FC<Props> = ({
           type="checkbox"
           className="todo__status"
           checked={todo.completed}
-          onChange={() => checkedTodoComleted(todo.id, !todo.completed)}
+          onChange={() => checkedTodoCompleted(todo.id, !todo.completed)}
         />
       </label>
 
@@ -32,7 +32,6 @@ export const TodoItem: React.FC<Props> = ({
         {todo.title}
       </span>
 
-      {/* Remove button appears only on hover */}
       <button
         type="button"
         className="todo__remove"
