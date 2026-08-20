@@ -6,7 +6,7 @@ type Props = {
   todo: Todo;
   checkedTodoCompleted: (id: number, completed: boolean) => void;
   removeTodo: (id: number) => void;
-  deletingTodoId: number | null;
+  deletingTodoId: number[];
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -43,7 +43,7 @@ export const TodoItem: React.FC<Props> = ({
       <div
         data-cy="TodoLoader"
         className={`modal overlay ${
-          deletingTodoId === todo.id ? 'is-active' : ''
+          deletingTodoId.includes(todo.id) ? 'is-active' : ''
         }`}
       >
         <div className="modal-background has-background-white-ter" />

@@ -6,7 +6,7 @@ type Props = {
   todos: Todo[];
   checkedTodoCompleted: (id: number, completed: boolean) => void;
   removeTodo: (id: number) => void;
-  deletingTodoId: number | null;
+  deletingTodoId: number[];
 };
 
 export const TodoList: React.FC<Props> = ({

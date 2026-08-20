@@ -1,13 +1,19 @@
-import { useEffect, useRef, useState } from "react"
-import { Todo } from "../types/Todo";
-import { USER_ID, addTodo, deleteTodo, getTodos, updateTodo } from "../api/todos";
-import { ErrorMessage } from "../types/ErrorMessage";
+import { useEffect, useRef, useState } from 'react';
+import { Todo } from '../types/Todo';
+import {
+  USER_ID,
+  addTodo,
+  deleteTodo,
+  getTodos,
+  updateTodo,
+} from '../api/todos';
+import { ErrorMessage } from '../types/ErrorMessage';
 
 export const useTodos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState<string>('');
 
-  const [deletingTodoId, setDeletingTodoId] = useState<number | null>(null);
+  const [deletingTodoId, setDeletingTodoId] = useState<number[]>([]);
   const allCompleted = todos.length > 0 && todos.every(todo => todo.completed);
 
   const [blockedInput, setBlockedInput] = useState(false);
@@ -23,7 +29,8 @@ export const useTodos = () => {
 
   const completedAllTodos = () => {
     setTodos(currentTodos => {
-      const allCompletedCurrent = currentTodos.length > 0 && currentTodos.every(todo => todo.completed);
+      const allCompletedCurrent =
+        currentTodos.length > 0 && currentTodos.every(todo => todo.completed);
 
       return currentTodos.map(todo => {
         const copyTodo = { ...todo };
@@ -31,7 +38,7 @@ export const useTodos = () => {
         copyTodo.completed = !allCompletedCurrent;
 
         return copyTodo;
-      })
+      });
     });
   };
 
@@ -73,15 +80,15 @@ export const useTodos = () => {
 
     updateTodo(id, completed)
       .then(data => {
-        setTodos(currentTodos => (
+        setTodos(currentTodos =>
           currentTodos.map(todo => {
             if (todo.id === id) {
               return data;
             }
 
             return todo;
-          })
-        ));
+          }),
+        );
       })
       .catch(() => setError(ErrorMessage.Update));
   }
@@ -90,20 +97,18 @@ export const useTodos = () => {
     setError('');
 
     setBlockedInput(true);
-    setDeletingTodoId(id);
+    setDeletingTodoId(currentIds => [...currentIds, id]);
 
     deleteTodo(id)
       .then(() => {
-        setTodos(currentTodos => (
-          currentTodos.filter(todo => todo.id !== id)
-        ));
+        setTodos(currentTodos => currentTodos.filter(todo => todo.id !== id));
         setBlockedInput(false);
-        setDeletingTodoId(null);
+        setDeletingTodoId(currentIds => currentIds.filter(currentId => currentId !== id));
       })
       .catch(() => {
         setError(ErrorMessage.Delete);
         setBlockedInput(false);
-        setDeletingTodoId(null);
+        setDeletingTodoId(currentIds => currentIds.filter(currentId => currentId !== id));
       });
   }
 
@@ -113,6 +118,8 @@ export const useTodos = () => {
 
     const completedTodos = todos.filter(todo => todo.completed);
     const deleteRequests = completedTodos.map(todo => deleteTodo(todo.id));
+
+    setDeletingTodoId(completedTodos.map(todo => todo.id))
 
     const results = await Promise.allSettled(deleteRequests);
 
@@ -124,11 +131,21 @@ export const useTodos = () => {
 
         return null;
       })
-      .filter(result => result !== null);
+      .filter((todo): todo is Todo => todo !== null);
 
-    setTodos(currentTodos => (
-      currentTodos.filter(todo => !successfullyDeletedTodos.includes(todo))
-    ));
+    setDeletingTodoId(currentIds =>
+  currentIds.filter(id => {
+    const successfullyDeletedTodoIds = successfullyDeletedTodos.map(
+      todo => todo.id,
+    );
+
+    return !successfullyDeletedTodoIds.includes(id);
+  }),
+);
+
+    setTodos(currentTodos =>
+      currentTodos.filter(todo => !successfullyDeletedTodos.includes(todo)),
+    );
     setBlockedInput(false);
 
     const isRejected = results.some(result => result.status === 'rejected');
@@ -170,7 +187,6 @@ export const useTodos = () => {
     };
   }, [error]);
 
-
   return {
     todos,
     error,
@@ -186,5 +202,5 @@ export const useTodos = () => {
     checkedTodoCompleted,
     removeTodo,
     clearCompleted,
-  }
-}
+  };
+};

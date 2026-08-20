@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { UserWarning } from './UserWarning';
-import {
-  USER_ID,
-} from './api/todos';
+import { USER_ID } from './api/todos';
 import { Header } from './components/Header';
 import { TodoList } from './components/TodoList';
 import { Footer } from './components/Footer';
@@ -48,7 +46,7 @@ export const App: React.FC = () => {
     checkedTodoCompleted,
     removeTodo,
     clearCompleted,
-  } = useTodos()
+  } = useTodos();
 
   const [selectedFilterLink, setSelectedFilterLink] = useState<Selected>('all');
 
